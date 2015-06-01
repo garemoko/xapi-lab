@@ -10,7 +10,7 @@
 
     <title>xAPI Lab</title>
 
-    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.min.css" />
     <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" />
     <link rel="stylesheet" type="text/css" href="css/bootstrap-datetimepicker.min.css" />
@@ -25,6 +25,13 @@
   </head>
   <body>
 
+    <div id="console-panel">
+        <a href="#" class="btn btn-info" id="opener"><i class="fa fa-history"></i></a>
+        <h4>Status History</h4>
+        <div id="console-history">
+        </div>
+    </div>
+
     <section class="container">
 
 
@@ -32,48 +39,6 @@
         <h1 class="text-primary"><i class="fa fa-flask"></i> xAPI Lab</h1>
         <h3 class="text-muted">Assisting in developing statements and communicating with a Learning Record Store (LRS)</h3>
       </div>
-
-
-      <div class="panel panel-primary">
-        <div class="panel-heading collapser">
-          <h4 class="panel-title"><a data-toggle="collapse" data-target="#auth" href="#auth" class="collapsed">LRS Basic Auth Setup</a></h4>
-        </div>
-        <div id="auth" class="panel-collapse collapse">
-          <div class="panel-body">
-
-            <div class="row">
-
-              <form id="endpoint-values">
-
-                <div class="form-group col-md-4">
-                  <label class="control-label" for="endpoint">Endpoint</label>
-                  <div class="input-group">
-                    <span class="input-group-addon"><i class="glyphicon glyphicon-globe"></i></span>
-                    <input type="url" class="form-control" value="https://lrs.adlnet.gov/xapi/" aria-describedby="LRS Endpoint" id="endpoint" required />
-                  </div>
-                </div>
-                <div class="form-group col-md-4">
-                  <label class="control-label" for="username">Username</label>
-                  <div class="input-group">
-                    <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-                    <input type="text" class="form-control" value="xapi-tools" aria-describedby="Username" id="username" required />
-                  </div>
-                </div>
-                <div class="form-group col-md-4">
-                  <label class="control-label" for="password">Password</label>
-                  <div class="input-group">
-                    <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
-                    <input type="password" class="form-control" value="xapi-tools" aria-describedby="Password" id="password" required />
-                  </div>
-                </div>
-
-              </form><!-- #endpoint-values -->
-
-            </div><!-- .row -->
-
-          </div><!-- .panel-body -->
-        </div><!-- .panel-collapse -->
-      </div><!-- .panel -->
 
 
       <div class="panel panel-primary">
@@ -112,7 +77,7 @@
                                 <div class="col-md-12">
 
                                   <div class="panel panel-info">
-                                    <div class="panel-heading"><h3 class="panel-title">Actor</h3></div>
+                                    <div class="panel-heading"><h3 class="panel-title">Actor <span class="pull-right"><a href="https://github.com/adlnet/xAPI-Spec/blob/1.0.3/xAPI.md#actor" target="_blank"><i class="fa fa-question-circle"></i></a></span></h3></div>
                                     <div class="panel-body">
 
                                       <div class="row">
@@ -123,8 +88,8 @@
                                             <option value="Agent">Agent</option>
                                             <option value="Group">Group</option>
                                           </select>
+                                          <div class="help-block"></div>
                                         </div>
-
                                       </div><!-- .row -->
 
                                       <div id="actor-types">
@@ -133,30 +98,31 @@
 
                                           <div class="row">
 
-                                            <div class="col-md-6">
+                                            <div class="col-md-6 ifi">
                                               
-                                              <h4 class="text-info">Use Only One <a href="https://github.com/adlnet/xAPI-Spec/blob/master/xAPI.md#inversefunctional" target="_blank" title="Inverse Functional Identifier">IFI</a> Below:</h4>
+                                              <h4 class="text-info">Use Only One <a href="https://github.com/adlnet/xAPI-Spec/blob/1.0.3/xAPI.md#inversefunctional" target="_blank" title="Inverse Functional Identifier">IFI</a> Below:</h4>
 
                                               <div class="form-group">
                                                 <label class="control-label" for="actor-agent-email">Email</label>
-                                                <input type="email" class="form-control" value="tyler.mulligan.ctr@adlnet.gov" aria-describedby="Actor Agent Email" id="actor-agent-email" />
+                                                <input type="email" class="form-control" value="tyler.mulligan.ctr@adlnet.gov" data-actor_agent_ifi="ifi" aria-describedby="Actor Agent Email" id="actor-agent-email" />
+                                                <div class="help-block with-errors"></div>
                                               </div>
 
                                               <div class="form-group">
                                                 <label class="control-label" for="actor-agent-email-sha1">Email SHA1</label>
-                                                <input type="text" class="form-control" placeholder="f522a694d7fc5c38d7c604f63c87c9f74dcd002e" aria-describedby="Actor Agent Email SHA1" id="actor-agent-email-sha1" />
+                                                <input type="text" class="form-control" placeholder="f522a694d7fc5c38d7c604f63c87c9f74dcd002e"data-actor_agent_ifi="ifi" aria-describedby="Actor Agent Email SHA1" id="actor-agent-email-sha1" />
+                                                <div class="help-block with-errors"></div>
                                               </div>
 
                                               <div class="form-group">
                                                 <label class="control-label" for="actor-agent-openid">OpenID</label>
-                                                <input type="text" class="form-control" placeholder="http://tyler.openid.example.com" aria-describedby="Actor Agent OpenID" id="actor-agent-openid" />
-                                                <span class="help-block"><a href="https://github.com/adlnet/ADL_LRS/issues/317" target="_blank">See here</a> if the LRS returns an error using OpenID</span>
+                                                <input type="text" class="form-control" placeholder="http://tyler.openid.example.com"  data-actor_agent_ifi="ifi" aria-describedby="Actor Agent OpenID" id="actor-agent-openid" />
                                               </div>
 
                                               <div class="form-group">
                                                 <label class="control-label" for="actor-agent-account">Account</label>
-                                                <textarea class="form-control" rows="4" aria-describedby="Actor Agent Account" id="actor-agent-account"></textarea>
-                                                <span class="help-block">An Account Object <span class="pull-right"><a href="#" id="actor-agent-account-example">Insert Example JSON</a></span></span>
+                                                <textarea class="form-control" rows="4" data-actor_agent_ifi="ifi" aria-describedby="Actor Agent Account" id="actor-agent-account"></textarea>
+                                                <div class="help-block with-errors">An Account Object <span class="pull-right"><a href="#" id="actor-agent-account-example">Insert Example JSON</a></span></div>
                                               </div>
 
                                             </div><!-- .col-md-6 -->
@@ -180,29 +146,32 @@
                                           
                                           <div class="row">
 
-                                            <div class="col-md-6">
+                                            <div class="col-md-6 ifi">
                                               
-                                              <h4 class="text-info">Use Only One <a href="https://github.com/adlnet/xAPI-Spec/blob/master/xAPI.md#inversefunctional" target="_blank" title="Inverse Functional Identifier">IFI</a> Below, Unless <a href="https://github.com/adlnet/xAPI-Spec/blob/master/xAPI.md#requirements-for-anonymous-groups" target="_blank">Anonymous Group</a>:</h4>
+                                              <h4 class="text-info">Use Only One <a href="https://github.com/adlnet/xAPI-Spec/blob/1.0.3/xAPI.md#inversefunctional" target="_blank" title="Inverse Functional Identifier">IFI</a> Below, Unless <a href="https://github.com/adlnet/xAPI-Spec/blob/1.0.3/xAPI.md#requirements-for-anonymous-groups" target="_blank">Anonymous Group</a>:</h4>
 
                                               <div class="form-group">
                                                 <label class="control-label" for="actor-group-email">Email</label>
-                                                <input type="email" class="form-control" value="teamxapi@example.com" aria-describedby="Actor Group Email" id="actor-group-email" />
+                                                <input type="email" class="form-control" value="teamxapi@example.com" data-actor_group_ifi="ifi" aria-describedby="Actor Group Email" id="actor-group-email" />
+                                                <div class="help-block with-errors"></div>
                                               </div>
 
                                               <div class="form-group">
                                                 <label class="control-label" for="actor-group-email-sha1">Email SHA1</label>
-                                                <input type="text" class="form-control" placeholder="3931fc689771433af943607547a38feb5e916ffd" aria-describedby="Actor Group Email SHA1" id="actor-group-email-sha1" />
+                                                <input type="text" class="form-control" placeholder="3931fc689771433af943607547a38feb5e916ffd" data-actor_group_ifi="ifi" aria-describedby="Actor Group Email SHA1" id="actor-group-email-sha1" />
+                                                <div class="help-block with-errors"></div>
                                               </div>
 
                                               <div class="form-group">
                                                 <label class="control-label" for="actor-group-openid">OpenID</label>
-                                                <input type="text" class="form-control" placeholder="http://teamxapi.openid.example.com" aria-describedby="Actor Group OpenID" id="actor-group-openid" />
+                                                <input type="text" class="form-control" placeholder="http://teamxapi.openid.example.com" data-actor_group_ifi="ifi" aria-describedby="Actor Group OpenID" id="actor-group-openid" />
+                                                <div class="help-block with-errors"></div>
                                               </div>
 
                                               <div class="form-group">
                                                 <label class="control-label" for="actor-group-account">Account</label>
-                                                <textarea class="form-control" rows="4" aria-describedby="Actor Group Account" id="actor-group-account"></textarea>
-                                                <span class="help-block">An Account Object <span class="pull-right"><a href="#" id="actor-group-account-example">Insert Example JSON</a></span></span>
+                                                <textarea class="form-control" rows="4" data-actor_group_ifi="ifi" aria-describedby="Actor Group Account" id="actor-group-account"></textarea>
+                                                <div class="help-block with-errors">An Account Object <span class="pull-right"><a href="#" id="actor-group-account-example">Insert Example JSON</a></span></div>
                                               </div>
 
                                             </div><!-- .col-md-6 -->
@@ -216,12 +185,12 @@
                                                 <input type="text" class="form-control" value="" placeholder="Student Group" aria-describedby="Actor Group Name" id="actor-group-name" />
                                               </div>
 
-                                              <h4 class="text-info">Required if <a href="https://github.com/adlnet/xAPI-Spec/blob/master/xAPI.md#requirements-for-anonymous-groups" target="_blank">Anonymous Group</a>, Otherwise Optional:</h4>
+                                              <h4 class="text-info">Required if <a href="https://github.com/adlnet/xAPI-Spec/blob/1.0.3/xAPI.md#requirements-for-anonymous-groups" target="_blank">Anonymous Group</a>, Otherwise Optional:</h4>
 
                                               <div class="form-group">
                                                 <label class="control-label" for="actor-group-members">Group Members</label>
-                                                <textarea class="form-control" rows="15" aria-describedby="Actor Group Members" id="actor-group-members" required></textarea>
-                                                <span class="help-block with-errors">Array of Agent Objects</span>
+                                                <textarea class="form-control" rows="15" data-actor_group_ifi="ifi" aria-describedby="Actor Group Members" id="actor-group-members"></textarea>
+                                                <div class="help-block with-errors">Array of Agent Objects</div>
                                               </div>
 
                                             </div><!-- .col-md-6 -->
@@ -236,7 +205,7 @@
                                   </div><!-- .panel -->
 
                                   <div class="panel panel-info">
-                                    <div class="panel-heading"><h3 class="panel-title">Verb</h3></div>
+                                    <div class="panel-heading"><h3 class="panel-title">Verb <span class="pull-right"><a href="https://github.com/adlnet/xAPI-Spec/blob/1.0.3/xAPI.md#verb" target="_blank"><i class="fa fa-question-circle"></i></a></span></h3></div>
                                     <div class="panel-body">
 
                                       <div class="row">
@@ -271,7 +240,7 @@
                                   </div><!-- .panel -->
 
                                   <div class="panel panel-info">
-                                    <div class="panel-heading"><h3 class="panel-title">Object</h3></div>
+                                    <div class="panel-heading"><h3 class="panel-title">Object <span class="pull-right"><a href="https://github.com/adlnet/xAPI-Spec/blob/1.0.3/xAPI.md#object" target="_blank"><i class="fa fa-question-circle"></i></a></span></h3></div>
                                     <div class="panel-body">
 
                                       <div class="row">
@@ -297,7 +266,7 @@
 
                                             <div class="form-group col-md-12">
                                               <label class="control-label" for="object-activity-id">Activity ID</label>
-                                              <input type="text" class="form-control" value="http://adlnet.gov/expapi/activities/example" aria-describedby="Object Activity ID" id="object-activity-id" />
+                                              <input type="text" class="form-control" value="http://adlnet.gov/expapi/activities/example" aria-describedby="Object Activity ID" id="object-activity-id" required />
                                             </div>
 
                                           </div><!-- .row -->
@@ -320,6 +289,116 @@
                                             </div>
 
                                           </div><!-- .row -->
+
+                                          <div class="row">
+
+                                            <div class="form-group col-md-6">
+                                              <label class="control-label" for="object-activity-type">Activity Type</label>
+                                              <input type="text" class="form-control" placeholder="http://www.example.co.uk/types/exampleactivitytype" aria-describedby="Object Activity Type" id="object-activity-type" />
+                                            </div>
+
+                                            <div class="form-group col-md-6">
+                                              <label class="control-label" for="object-activity-more-info">More Info</label>
+                                              <input type="text" class="form-control" placeholder="http://virtualmeeting.example.com/345256" aria-describedby="Object More Info" id="object-activity-more-info" />
+                                            </div>
+                                              
+                                          </div><!-- .row -->
+
+                                          <div class="row">
+
+                                              <div class="form-group col-md-5">
+                                                <label class="control-label" for="object-activity-interaction-type">Interaction Type</label>
+                                                <select class="form-control" name="object-activity-interaction-type" id="object-activity-interaction-type">
+                                                  <option selected></option>
+                                                  <option>choice</option>
+                                                  <option>sequencing</option>
+                                                  <option>likert</option>
+                                                  <option>matching</option>
+                                                  <option>performance</option>
+                                                  <option>true-false</option>
+                                                  <option>fill-in</option>
+                                                  <option>long-fill-in</option>
+                                                  <option>numeric</option>
+                                                  <option>other</option>
+                                                </select>
+                                                <div class="help-block"><a href="https://github.com/adlnet/xAPI-Spec/blob/1.0.3/xAPI.md#interactionacts" target="_blank">Interaction Activities</a></div>
+                                              </div>
+
+                                          </div><!-- .row -->
+
+                                          <div id="component-lists">
+
+                                            <div class="row" id="component-list-choices">
+
+                                                <div class="form-group col-md-12">
+                                                  <label class="control-label" for="object-activity-component-list-choices">Choices</label>
+                                                  <textarea class="form-control" rows="10" aria-describedby="Object Component List Choices" id="object-activity-component-list-choices"></textarea>
+                                                  <div class="help-block">An Array of interaction components <span class="pull-right"><a href="#" id="object-activity-component-list-choices-example">Insert Example JSON</a></span></div>
+                                                </div>
+
+                                            </div><!-- .row -->
+
+                                            <div class="row" id="component-list-scale">
+
+                                                <div class="form-group col-md-12">
+                                                  <label class="control-label" for="object-activity-component-list-scale">Scale</label>
+                                                  <textarea class="form-control" rows="10" aria-describedby="Object Scale List Choices" id="object-activity-component-list-scale"></textarea>
+                                                  <div class="help-block">An Array of interaction components <span class="pull-right"><a href="#" id="object-activity-component-list-scale-example">Insert Example JSON</a></span></div>
+                                                </div>
+
+                                            </div><!-- .row -->
+
+                                            <div class="row" id="component-list-source">
+
+                                                <div class="form-group col-md-12">
+                                                  <label class="control-label" for="object-activity-component-list-source">Source</label>
+                                                  <textarea class="form-control" rows="10" aria-describedby="Object Source List Choices" id="object-activity-component-list-source"></textarea>
+                                                  <div class="help-block">An Array of interaction components <span class="pull-right"><a href="#" id="object-activity-component-list-source-example">Insert Example JSON</a></span></div>
+                                                </div>
+
+                                            </div><!-- .row -->
+
+                                            <div class="row" id="component-list-target">
+
+                                                <div class="form-group col-md-12">
+                                                  <label class="control-label" for="object-activity-component-list-target">Target</label>
+                                                  <textarea class="form-control" rows="10" aria-describedby="Object Target List Choices" id="object-activity-component-list-target"></textarea>
+                                                  <div class="help-block">An Array of interaction components <span class="pull-right"><a href="#" id="object-activity-component-list-target-example">Insert Example JSON</a></span></div>
+                                                </div>
+
+                                            </div><!-- .row -->
+
+                                            <div class="row" id="component-list-steps">
+
+                                                <div class="form-group col-md-12">
+                                                  <label class="control-label" for="object-activity-component-list-steps">Steps</label>
+                                                  <textarea class="form-control" rows="10" aria-describedby="Object Steps List Choices" id="object-activity-component-list-steps"></textarea>
+                                                  <div class="help-block">An Array of interaction components <span class="pull-right"><a href="#" id="object-activity-component-list-steps-example">Insert Example JSON</a></span></div>
+                                                </div>
+
+                                            </div><!-- .row -->
+
+                                          </div><!-- #component-lists -->
+
+                                          <div class="row" id="correct-responses-pattern">
+
+                                            <div class="form-group col-md-12">
+                                              <label class="control-label" for="object-activity-correct-responses-pattern">Correct Responses Pattern</label>
+                                              <textarea class="form-control" rows="10" aria-describedby="Correct Responses Pattern" id="object-activity-correct-responses-pattern"></textarea>
+                                              <div class="help-block">An Array of Strings <span class="pull-right"><a href="#" id="object-activity-correct-responses-pattern-example">Insert Example JSON</a></span></div>
+                                            </div>
+                                              
+                                          </div><!-- .row -->
+
+                                          <div class="row">
+
+                                            <div class="form-group col-md-12">
+                                              <label class="control-label" for="object-activity-extensions">Extensions</label>
+                                              <textarea class="form-control" rows="5" aria-describedby="Activity Extensions" id="object-activity-extensions"></textarea>
+                                              <div class="help-block"><a href="https://github.com/adlnet/xAPI-Spec/blob/1.0.3/xAPI.md#miscext" target="_blank">Extensions</a></div>
+                                            </div>
+
+                                          </div><!-- .row -->
                                         
                                         </div><!-- #object-Activity -->
 
@@ -327,30 +406,31 @@
 
                                           <div class="row">
 
-                                            <div class="col-md-6">
+                                            <div class="col-md-6 ifi">
                                               
-                                              <h4 class="text-info">Use Only One <a href="https://github.com/adlnet/xAPI-Spec/blob/master/xAPI.md#inversefunctional" target="_blank" title="Inverse Functional Identifier">IFI</a> Below:</h4>
+                                              <h4 class="text-info">Use Only One <a href="https://github.com/adlnet/xAPI-Spec/blob/1.0.3/xAPI.md#inversefunctional" target="_blank" title="Inverse Functional Identifier">IFI</a> Below:</h4>
 
                                               <div class="form-group">
                                                 <label class="control-label" for="object-agent-email">Email</label>
-                                                <input type="email" class="form-control" value="tyler.mulligan.ctr@adlnet.gov" aria-describedby="Object Agent Email" id="object-agent-email" />
+                                                <input type="email" class="form-control" value="tyler.mulligan.ctr@adlnet.gov" data-object_agent_ifi="ifi" aria-describedby="Object Agent Email" id="object-agent-email" />
+                                                <div class="help-block with-errors"></div>
                                               </div>
 
                                               <div class="form-group">
                                                 <label class="control-label" for="object-agent-email-sha1">Email SHA1</label>
-                                                <input type="text" class="form-control" placeholder="f522a694d7fc5c38d7c604f63c87c9f74dcd002e" aria-describedby="Object Agent Email SHA1" id="object-agent-email-sha1" />
+                                                <input type="text" class="form-control" placeholder="f522a694d7fc5c38d7c604f63c87c9f74dcd002e" data-object_agent_ifi="ifi" aria-describedby="Object Agent Email SHA1" id="object-agent-email-sha1" />
+                                                <div class="help-block with-errors"></div>
                                               </div>
 
                                               <div class="form-group">
                                                 <label class="control-label" for="object-agent-openid">OpenID</label>
-                                                <input type="text" class="form-control" placeholder="http://tyler.openid.example.com" aria-describedby="Object Agent OpenID" id="object-agent-openid" />
-                                                <span class="help-block"><a href="https://github.com/adlnet/ADL_LRS/issues/317" target="_blank">See here</a> if the LRS returns an error using OpenID</span>
+                                                <input type="text" class="form-control" placeholder="http://tyler.openid.example.com" data-object_agent_ifi="ifi" aria-describedby="Object Agent OpenID" id="object-agent-openid" />
                                               </div>
 
                                               <div class="form-group">
                                                 <label class="control-label" for="object-agent-account">Account</label>
-                                                <textarea class="form-control" rows="4" aria-describedby="Object Agent Account" id="object-agent-account"></textarea>
-                                                <span class="help-block">An Account Object <span class="pull-right"><a href="#" id="object-agent-account-example">Insert Example JSON</a></span></span>
+                                                <textarea class="form-control" rows="4" data-object_agent_ifi="ifi" aria-describedby="Object Agent Account" id="object-agent-account"></textarea>
+                                                <div class="help-block with-errors">An Account Object <span class="pull-right"><a href="#" id="object-agent-account-example">Insert Example JSON</a></span></div>
                                               </div>
 
                                             </div><!-- .col-md-6 -->
@@ -374,29 +454,32 @@
                                           
                                           <div class="row">
 
-                                            <div class="col-md-6">
+                                            <div class="col-md-6 ifi">
                                               
-                                              <h4 class="text-info">Use Only One <a href="https://github.com/adlnet/xAPI-Spec/blob/master/xAPI.md#inversefunctional" target="_blank" title="Inverse Functional Identifier">IFI</a> Below, Unless <a href="https://github.com/adlnet/xAPI-Spec/blob/master/xAPI.md#requirements-for-anonymous-groups" target="_blank">Anonymous Group</a>:</h4>
+                                              <h4 class="text-info">Use Only One <a href="https://github.com/adlnet/xAPI-Spec/blob/1.0.3/xAPI.md#inversefunctional" target="_blank" title="Inverse Functional Identifier">IFI</a> Below, Unless <a href="https://github.com/adlnet/xAPI-Spec/blob/1.0.3/xAPI.md#requirements-for-anonymous-groups" target="_blank">Anonymous Group</a>:</h4>
 
                                               <div class="form-group">
                                                 <label class="control-label" for="object-group-email">Email</label>
-                                                <input type="email" class="form-control" value="teamxapi@example.com" aria-describedby="Object Group Email" id="object-group-email" />
+                                                <input type="email" class="form-control" value="teamxapi@example.com" data-object_group_ifi="ifi" aria-describedby="Object Group Email" id="object-group-email" />
+                                                <div class="help-block with-errors"></div>
                                               </div>
 
                                               <div class="form-group">
                                                 <label class="control-label" for="object-group-email-sha1">Email SHA1</label>
-                                                <input type="text" class="form-control" placeholder="3931fc689771433af943607547a38feb5e916ffd" aria-describedby="Object Group Email SHA1" id="object-group-email-sha1" />
+                                                <input type="text" class="form-control" placeholder="3931fc689771433af943607547a38feb5e916ffd" data-object_group_ifi="ifi" aria-describedby="Object Group Email SHA1" id="object-group-email-sha1" />
+                                                <div class="help-block with-errors"></div>
                                               </div>
 
                                               <div class="form-group">
                                                 <label class="control-label" for="object-group-openid">OpenID</label>
-                                                <input type="text" class="form-control" placeholder="http://teamxapi.openid.example.com" aria-describedby="Object Group OpenID" id="object-group-openid" />
+                                                <input type="text" class="form-control" placeholder="http://teamxapi.openid.example.com" data-object_group_ifi="ifi" aria-describedby="Object Group OpenID" id="object-group-openid" />
+                                                <div class="help-block with-errors"></div>
                                               </div>
 
                                               <div class="form-group">
                                                 <label class="control-label" for="object-group-account">Account</label>
-                                                <textarea class="form-control" rows="4" aria-describedby="Object Group Account" id="object-group-account"></textarea>
-                                                <span class="help-block">An Account Object <span class="pull-right"><a href="#" id="object-group-account-example">Insert Example JSON</a></span></span>
+                                                <textarea class="form-control" rows="4" data-object_group_ifi="ifi" aria-describedby="Object Group Account" id="object-group-account"></textarea>
+                                                <div class="help-block with-errors">An Account Object <span class="pull-right"><a href="#" id="object-group-account-example">Insert Example JSON</a></span></div>
                                               </div>
 
                                             </div><!-- .col-md-6 -->
@@ -410,12 +493,12 @@
                                                 <input type="text" class="form-control" value="" placeholder="Student Group" aria-describedby="Object Group Name" id="object-group-name" />
                                               </div>
 
-                                              <h4 class="text-info">Required if <a href="https://github.com/adlnet/xAPI-Spec/blob/master/xAPI.md#requirements-for-anonymous-groups" target="_blank">Anonymous Group</a>, Otherwise Optional:</h4>
+                                              <h4 class="text-info">Required if <a href="https://github.com/adlnet/xAPI-Spec/blob/1.0.3/xAPI.md#requirements-for-anonymous-groups" target="_blank">Anonymous Group</a>, Otherwise Optional:</h4>
 
                                               <div class="form-group">
                                                 <label class="control-label" for="object-group-members">Group Members</label>
-                                                <textarea class="form-control" rows="15" aria-describedby="Object Group Members" id="object-group-members" required></textarea>
-                                                <span class="help-block with-errors">Array of Agent Objects</span>
+                                                <textarea class="form-control" rows="15" data-object_group_ifi="ifi" aria-describedby="Object Group Members" id="object-group-members"></textarea>
+                                                <div class="help-block with-errors">Array of Agent Objects</div>
                                               </div>
 
                                             </div><!-- .col-md-6 -->
@@ -430,7 +513,7 @@
 
                                             <div class="form-group col-md-6">
                                               <label class="control-label" for="object-statementref-id">Statement ID</label>
-                                              <input type="text" class="form-control" value="" placeholder="137ca18f-97f6-4477-981a-696fb41c6b63" aria-describedby="Object Statement Reference ID" id="object-statementref-id" required />
+                                              <input type="text" class="form-control" value="" placeholder="137ca18f-97f6-4477-981a-696fb41c6b63" aria-describedby="Object Statement Reference ID" id="object-statementref-id" pattern="^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$" required />
                                             </div>
 
                                           </div><!-- .row -->
@@ -443,7 +526,7 @@
 
                                             <div class="form-group col-md-12">
                                               <label class="control-label" for="object-substatement-json">SubStatement JSON</label>
-                                              <textarea class="form-control" rows="20" aria-describedby="Object SubStatement JSON" id="object-substatement-json"></textarea>
+                                              <textarea class="form-control" rows="20" aria-describedby="Object SubStatement JSON" id="object-substatement-json" required></textarea>
                                             </div>
 
                                           </div><!-- .row -->
@@ -456,7 +539,7 @@
                                   </div><!-- .panel -->
 
                                   <div class="panel panel-default">
-                                    <div class="panel-heading collapser"><h3 class="panel-title"><a data-toggle="collapse" data-target="#result" href="#result" class="collapsed">Result</a></h3></div>
+                                    <div class="panel-heading collapser"><h3 class="panel-title"><a data-toggle="collapse" data-target="#result" href="#result" class="collapsed">Result</a> <span class="pull-right"><a href="https://github.com/adlnet/xAPI-Spec/blob/1.0.3/xAPI.md#result" target="_blank"><i class="fa fa-question-circle"></i></a></span></h3></div>
                                     <div id="result" class="panel-collapse collapse">
                                       <div class="panel-body">
 
@@ -465,7 +548,7 @@
                                           <div class="form-group col-md-2">
                                             <label class="control-label" for="result-scaled-score">Scaled Score</label>
                                             <!-- arbitrary number of decimal places due to html5 number input limitions -->
-                                            <input type="number" min="-1" max="1" step="0.00001" pattern="[0-9]*(.)?[0-9]+" class="form-control" placeholder="0" aria-describedby="Scaled Score" id="result-scaled-score" />
+                                            <input type="number" min="-1" max="1" step="0.00001" pattern="^[0-9]*(.)?[0-9]+$" class="form-control" placeholder="0" aria-describedby="Scaled Score" id="result-scaled-score" />
                                           </div>
 
                                           <div class="form-group col-md-2">
@@ -524,6 +607,51 @@
                                             <span class="help-block"><a href="http://www.wikiwand.com/en/ISO_8601#/Durations" target="_blank">ISO 8601 Duration</a></span>
                                           </div>
 
+                                          <div class="form-group col-md-1">
+                                            <label>Build</label>
+                                            <p style="margin-top:6px;">string <i class="fa fa-arrow-right"></i></p>
+                                          </div>
+
+                                          <div class="form-group col-md-1">
+                                            <label class="control-label" for="result-duration-years">Years</label>
+                                            <input type="number" min="0" max="99999" step="1" class="form-control duration-segment" aria-describedby="Duration Years" id="result-duration-years" />
+                                          </div>
+
+                                          <div class="form-group col-md-1">
+                                            <label class="control-label" for="result-duration-months">Months</label>
+                                            <input type="number" min="0" max="12" step="1"  class="form-control duration-segment" aria-describedby="Duration Months" id="result-duration-months" />
+                                          </div>
+
+                                          <div class="form-group col-md-1">
+                                            <label class="control-label" for="result-duration-weeks">Weeks</label>
+                                            <input type="number" min="0" max="52" step="1"  class="form-control duration-segment" aria-describedby="Duration Weeks" id="result-duration-weeks" />
+                                          </div>
+
+                                          <div class="form-group col-md-1">
+                                            <label class="control-label" for="result-duration-days">Days</label>
+                                            <input type="number" min="0" max="365" step="1"  class="form-control duration-segment" style="padding:6px 6px 6px 10px" aria-describedby="Duration Days" id="result-duration-days" />
+                                          </div>
+
+                                          <div class="form-group col-md-1">
+                                            <label class="control-label" for="result-duration-hours">Hours</label>
+                                            <input type="number" min="0" max="24" step="1" class="form-control duration-segment" aria-describedby="Duration Hours" id="result-duration-hours" />
+                                          </div>
+
+                                          <div class="form-group col-md-1">
+                                            <label class="control-label" for="result-duration-minutes">Minutes</label>
+                                            <input type="number" min="0" max="60" step="1" class="form-control duration-segment" aria-describedby="Duration Minutes" id="result-duration-minutes" />
+                                          </div>
+
+                                          <div class="form-group col-md-1">
+                                            <label class="control-label" for="result-duration-seconds">Seconds</label>
+                                            <input type="number" min="0" max="60" step="1"  class="form-control duration-segment" aria-describedby="Duration Seconds" id="result-duration-seconds" />
+                                          </div>
+
+                                          <div class="form-group col-md-1">
+                                            <label class="control-label" for="result-duration-milliseconds">ms</label>
+                                            <input type="number" min="0" max="60" step="1"  class="form-control duration-segment" aria-describedby="Duration Milliseconds" id="result-duration-milliseconds" />
+                                          </div>
+
                                         </div><!-- .row -->
 
                                         <div class="row">
@@ -531,6 +659,7 @@
                                           <div class="form-group col-md-12">
                                             <label class="control-label" for="result-extensions">Extensions</label>
                                             <textarea class="form-control" rows="5" aria-describedby="Result Extensions" id="result-extensions"></textarea>
+                                            <div class="help-block"><a href="https://github.com/adlnet/xAPI-Spec/blob/1.0.3/xAPI.md#miscext" target="_blank">Extensions</a></div>
                                           </div>
 
                                         </div><!-- .row -->
@@ -540,7 +669,7 @@
                                   </div><!-- .panel -->
 
                                   <div class="panel panel-default">
-                                    <div class="panel-heading collapser"><h3 class="panel-title"><a data-toggle="collapse" data-target="#context" href="#context" class="collapsed">Context</a></h3></div>
+                                    <div class="panel-heading collapser"><h3 class="panel-title"><a data-toggle="collapse" data-target="#context" href="#context" class="collapsed">Context</a> <span class="pull-right"><a href="https://github.com/adlnet/xAPI-Spec/blob/1.0.3/xAPI.md#context" target="_blank"><i class="fa fa-question-circle"></i></a></span></h3></div>
                                     <div id="context" class="panel-collapse collapse">
                                       <div class="panel-body">
 
@@ -548,7 +677,7 @@
 
                                           <div class="form-group col-md-6">
                                             <label class="control-label" for="context-registration-id">Registration ID</label>
-                                            <input type="text" class="form-control" value="" aria-describedby="Registration ID" placeholder="51a6f860-1997-11e3-8ffd-0800200c9a66" pattern="[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}" id="context-registration-id" />
+                                            <input type="text" class="form-control" value="" aria-describedby="Registration ID" placeholder="51a6f860-1997-11e3-8ffd-0800200c9a66" pattern="^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$" id="context-registration-id" />
                                           </div>
 
                                         </div>
@@ -576,7 +705,7 @@
 
                                           <div class="form-group col-md-12">
                                             <label class="control-label" for="context-team-members">Team Members</label>
-                                            <textarea class="form-control" rows="10" aria-describedby="Context Team Members" id="context-team-members"></textarea>
+                                            <textarea class="form-control" rows="15" aria-describedby="Context Team Members" id="context-team-members"></textarea>
                                             <span class="help-block">Array of Agent Objects <span class="pull-right"><a href="#" id="context-team-members-example">Insert Example JSON</a></span></span>
                                           </div>
 
@@ -586,8 +715,8 @@
 
                                           <div class="form-group col-md-12">
                                             <label class="control-label" for="context-context-activities">Context Activities</label>
-                                            <textarea class="form-control" rows="10" aria-describedby="Context Activities" id="context-context-activities"></textarea>
-                                            <span class="help-block">An Account Object <span class="pull-right"><a href="#" id="context-context-activities-example">Insert Example JSON</a></span></span>
+                                            <textarea class="form-control" rows="25" aria-describedby="Context Activities" id="context-context-activities"></textarea>
+                                            <span class="help-block">A Context Activities Object <span class="pull-right"><a href="#" id="context-context-activities-example">Insert Example JSON</a></span></span>
                                           </div>
 
                                         </div><!-- .row -->
@@ -615,7 +744,17 @@
 
                                           <div class="form-group col-md-6">
                                             <label class="control-label" for="context-statement">Statement</label>
-                                            <input type="text" class="form-control" placeholder="137ca18f-97f6-4477-981a-696fb41c6b63" aria-describedby="Context Statement" id="context-statement" pattern="[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}" />
+                                            <input type="text" class="form-control" placeholder="137ca18f-97f6-4477-981a-696fb41c6b63" aria-describedby="Context Statement" id="context-statement" pattern="^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$" />
+                                          </div>
+
+                                        </div><!-- .row -->
+
+                                        <div class="row">
+
+                                          <div class="form-group col-md-12">
+                                            <label class="control-label" for="context-extensions">Extensions</label>
+                                            <textarea class="form-control" rows="5" aria-describedby="Context Extensions" id="context-extensions"></textarea>
+                                            <div class="help-block"><a href="https://github.com/adlnet/xAPI-Spec/blob/1.0.3/xAPI.md#miscext" target="_blank">Extensions</a></div>
                                           </div>
 
                                         </div><!-- .row -->
@@ -625,7 +764,7 @@
                                   </div><!-- .panel -->
 
                                   <div class="panel panel-default">
-                                    <div class="panel-heading collapser"><h3 class="panel-title"><a data-toggle="collapse" data-target="#attachments" href="#attachments" class="collapsed">Attachments</a></h3></div>
+                                    <div class="panel-heading collapser"><h3 class="panel-title"><a data-toggle="collapse" data-target="#attachments" href="#attachments" class="collapsed">Attachments</a> <span class="pull-right"><a href="https://github.com/adlnet/xAPI-Spec/blob/1.0.3/xAPI.md#attachments" target="_blank"><i class="fa fa-question-circle"></i></a></span></h3></div>
                                     <div id="attachments" class="panel-collapse collapse">
                                       <div class="panel-body">
 
@@ -694,6 +833,45 @@
                                     </div><!-- #attachments -->
                                   </div><!-- .panel -->
 
+                                  <div class="panel panel-default">
+                                    <div class="panel-heading collapser"><h3 class="panel-title"><a data-toggle="collapse" data-target="#statement" href="#statement" class="collapsed">Statement</a> <span class="pull-right"><a href="https://github.com/adlnet/xAPI-Spec/blob/1.0.3/xAPI.md#40-statement" target="_blank"><i class="fa fa-question-circle"></i></a></span></h3></div>
+                                    <div id="statement" class="panel-collapse collapse">
+                                      <div class="panel-body">
+
+                                        <div class="row">
+
+                                          <div class="form-group col-md-5">
+                                            <label class="control-label" for="statement-timestamp">Timestamp</label>
+                                            <div class="input-group date" id="statement-timestamp">
+                                              <input type="text" class="form-control">
+                                              <span class="input-group-addon">
+                                                <span class="glyphicon glyphicon-calendar"></span>
+                                              </span>
+                                            </div>
+                                          </div>
+
+                                          <div class="form-group col-md-5">
+                                            <label class="control-label" for="statement-id">Statement ID</label>
+                                            <input type="text" class="form-control" value="" aria-describedby="Statement ID" placeholder="ef8a3c05-7c88-4d46-a821-c6f2f061ef23" id="statement-id" pattern="^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$">
+                                          </div>
+
+                                          <div class="form-group col-md-2">
+                                            <label class="control-label" for="statement-version">Version</label>
+                                            <select class="form-control" name="statement-version" id="statement-version">
+                                              <option></option>
+                                              <option>1.0.0</option>
+                                              <option>1.0.1</option>
+                                              <option>1.0.2</option>
+                                              <option>1.0.3</option>
+                                            </select>
+                                          </div>
+
+                                        </div><!-- .row -->
+
+                                      </div><!-- .panel-body -->
+                                    </div><!-- #statement -->
+                                  </div><!-- .panel -->
+
                                 </div><!-- .col-md-12 -->
 
                               </div><!-- .row -->
@@ -750,7 +928,7 @@
                     <div class="col-md-6">
 
                       <div class="panel panel-default">
-                        <div class="panel-heading"><h3 class="panel-title">Statements Sent to the LRS <small><a href="http://adlnet.github.io/xapi-statement-viewer" target="_blank" class="pull-right">View Statements <i class="glyphicon glyphicon-new-window"></i></a></small></h3></div>
+                        <div class="panel-heading"><h3 class="panel-title">Statements Sent to the LRS <small><a href="http://adlnet.github.io/xapi-statement-viewer" target="_blank" class="statement-viewer pull-right">View Statements <i class="glyphicon glyphicon-new-window"></i></a></small></h3></div>
                         <div class="panel-body">
 
                           <div>
@@ -773,7 +951,7 @@
                     <div class="col-md-12">
                       <div class="alert alert-warning">
                         <h4>Looking for more?</h4>
-                        <p>This form will help you with basic retrieval of raw statements, if you're looking for something easier to read, check out the <a href="http://adlnet.github.io/xapi-statement-viewer" target="_blank">xAPI Statement Viewer</a>.</p>
+                        <p>This form will help you with basic retrieval of raw statements, if you're looking for something easier to read, check out the <a href="http://adlnet.github.io/xapi-statement-viewer" rel="http://adlnet.github.io/xapi-statement-viewer" target="_blank" class="statement-viewer">xAPI Statement Viewer</a>.</p>
                       </div>
                     </div>
 
@@ -856,7 +1034,7 @@
 
                               <div class="form-group col-md-12">
                                 <label class="control-label" for="search-registration-id">Registration ID</label>
-                                <input type="text" class="form-control" value="" aria-describedby="Registration ID" placeholder="51a6f860-1997-11e3-8ffd-0800200c9a66" id="search-registration-id" pattern="[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}" />
+                                <input type="text" class="form-control" value="" aria-describedby="Registration ID" placeholder="51a6f860-1997-11e3-8ffd-0800200c9a66" id="search-registration-id" pattern="^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$" />
                               </div>
 
                             </div><!-- .row -->
@@ -865,7 +1043,7 @@
 
                               <div class="form-group col-md-12">
                                 <label class="control-label" for="search-statement-id">Statement ID</label>
-                                <input type="text" class="form-control" value="" aria-describedby="Activity ID" placeholder="ef8a3c05-7c88-4d46-a821-c6f2f061ef23" id="search-statement-id" pattern="[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}" />
+                                <input type="text" class="form-control" value="" aria-describedby="Statement ID" placeholder="ef8a3c05-7c88-4d46-a821-c6f2f061ef23" id="search-statement-id" pattern="^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$" />
                               </div>
 
                             </div><!-- .row -->
@@ -874,7 +1052,7 @@
 
                               <div class="form-group col-md-12">
                                 <label class="control-label" for="search-voided-statement-id">Voided Statement ID</label>
-                                <input type="text" class="form-control" value="" aria-describedby="Voided Activity ID" placeholder="00d9f122-e9cd-4ea3-b180-9daa49c8a7e5" id="search-voided-statement-id" pattern="[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}" />
+                                <input type="text" class="form-control" value="" aria-describedby="Voided Statement ID" placeholder="00d9f122-e9cd-4ea3-b180-9daa49c8a7e5" id="search-voided-statement-id" pattern="^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$" />
                               </div>
 
                             </div><!-- .row -->
@@ -955,7 +1133,7 @@
 
 
       <div class="panel panel-primary">
-        <div class="panel-heading collapser"><h3 class="panel-title"><a data-toggle="collapse" data-target="#damar" href="#damar" class="collapsed">Document Manipulation and Response</a></h3></div>
+        <div class="panel-heading collapser"><h3 class="panel-title"><a data-toggle="collapse" data-target="#damar" href="#damar" class="collapsed">Document Manipulation and Response</a> <span class="pull-right"><a href="https://github.com/adlnet/xAPI-Spec/blob/1.0.3/xAPI.md#docapis" target="_blank"><i class="fa fa-question-circle bg-primary"></i></a></span></h3></div>
         <div id="damar" class="panel-collapse collapse">
           <div class="panel-body">
 
@@ -1363,12 +1541,54 @@
         </div><!-- #damar -->
       </div><!-- .panel -->
 
+
+      <div class="panel panel-primary">
+        <div class="panel-heading collapser">
+          <h4 class="panel-title"><a data-toggle="collapse" data-target="#auth" href="#auth" class="collapsed">LRS Basic Auth Setup</a></h4>
+        </div>
+        <div id="auth" class="panel-collapse collapse">
+          <div class="panel-body">
+
+            <div class="row">
+
+              <form id="endpoint-values">
+
+                <div class="form-group col-md-4">
+                  <label class="control-label" for="endpoint">Endpoint</label>
+                  <div class="input-group">
+                    <span class="input-group-addon"><i class="glyphicon glyphicon-globe"></i></span>
+                    <input type="url" class="form-control" value="https://lrs.adlnet.gov/xapi/" aria-describedby="LRS Endpoint" id="endpoint" required />
+                  </div>
+                </div>
+                <div class="form-group col-md-4">
+                  <label class="control-label" for="username">Username</label>
+                  <div class="input-group">
+                    <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+                    <input type="text" class="form-control" value="xapi-tools" aria-describedby="Username" id="username" required />
+                  </div>
+                </div>
+                <div class="form-group col-md-4">
+                  <label class="control-label" for="password">Password</label>
+                  <div class="input-group">
+                    <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+                    <input type="password" class="form-control" value="xapi-tools" aria-describedby="Password" id="password" required />
+                  </div>
+                </div>
+
+              </form><!-- #endpoint-values -->
+
+            </div><!-- .row -->
+
+          </div><!-- .panel-body -->
+        </div><!-- .panel-collapse -->
+      </div><!-- .panel -->
+
       <h3 class="text-info">About</h3>
       <div class="alert alert-info">
         <p>This tool helps generate valid statements and demonstrates various interactions with an LRS. xAPI Lab is free and open-source, check it out <a href="https://github.com/adlnet/xapi-lab" target="_blank">on github</a>.</p>
-        <p>It is recommended that you use the <a href="https://github.com/adlnet/xAPI-Spec/blob/master/xAPI.md" target="_blank">xAPI Specification</a> as a reference when using this tool.</p>
-        <p>View statements sent to the ADL LRS with <a href="http://adlnet.github.io/xapi-statement-viewer" target="_blank">xAPI Statement Viewer</a></p>
-        <p><span class="label label-info">Tip: Open your browser's developer tools (F12) to see more info in the console.</span></p>
+        <p>It is recommended that you use the <a href="https://github.com/adlnet/xAPI-Spec/blob/1.0.3/xAPI.md" target="_blank">xAPI Specification</a> as a reference when using this tool.</p>
+        <p>View statements sent to the ADL LRS with <a href="http://adlnet.github.io/xapi-statement-viewer" target="_blank" class="statement-viewer">xAPI Statement Viewer</a></p>
+        <p><small><b>xapi-lab git @ master</b></small></p>
       </div>
       
       <nav>
@@ -1380,31 +1600,30 @@
 
     </section><!-- /.container -->
 
-
     <!-- Placed at the end of the document so the pages load faster -->
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
-    <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
 
-    <!-- xapi scripts -->
-    <script type="text/javascript" src="js/xapiwrapper.min.js"></script>
+    <!-- xAPI Scripts -->
+    <script type="text/javascript" src="js/lib/xapiwrapper.min.js"></script>
 
-    <!-- editor -->
+    <!-- Editor -->
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.1.3/ace.js" charset="utf-8"></script>
 
-    <!-- pretty print -->
+    <!-- Pretty Print -->
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.min.js"></script>
 
-    <!-- date picker -->
-    <script type="text/javascript" src="js/moment.min.js"></script>
-    <script type="text/javascript" src="js/bootstrap-datetimepicker.min.js"></script>
+    <!-- Date Picker -->
+    <script type="text/javascript" src="js/lib/moment.min.js"></script>
+    <script type="text/javascript" src="js/lib/bootstrap-datetimepicker.min.js"></script>
 
     <!-- Notifications -->
-    <script type="text/javascript" src="js/bootstrap-growl.min.js"></script>
+    <script type="text/javascript" src="js/lib/bootstrap-notify.min.js"></script>
     
     <!-- Form Validation -->
-    <script type="text/javascript" src="js/validator.min.js"></script>
+    <script type="text/javascript" src="js/lib/validator.min.js"></script>
 
-    <!-- custom functions -->
+    <!-- Custom Functions -->
     <script type="text/javascript" src="js/scripts.js"></script>
 
   </body>

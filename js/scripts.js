@@ -3,6 +3,10 @@
 // Initialize the editor
 var editor = ace.edit('editor');
 editor.getSession().setMode('ace/mode/javascript');
+editor.on('change', function() {
+    var r = validateJSON(editor.getValue());
+    btnValidateJSON(r);
+});
 
 var notificationSettings = {
     animate: {
@@ -14,9 +18,12 @@ var notificationSettings = {
         from: "bottom",
         align: "right"
     },
+    progressbar: false
 };
 var notificationErrorSettings = jQuery.extend(true, {}, notificationSettings);
 notificationErrorSettings.type = "danger";
+var notificationWarningSettings = jQuery.extend(true, {}, notificationSettings);
+notificationWarningSettings.type = "warning";
 
 var dateTimeSettings = {
     showTodayButton: true,
@@ -26,7 +33,14 @@ var dateTimeSettings = {
 // Handle XAPIWrapper XHR Errors
 ADL.xhrRequestOnError = function(xhr, method, url, callback, callbackargs) {
     console.log(xhr);
-    $.growl({ title: "Status " + xhr.status + " " + xhr.statusText + ": ", message: xhr.response }, notificationErrorSettings);
+    notify({ title: "Status " + xhr.status + " " + xhr.statusText + ": ", message: xhr.response }, notificationErrorSettings);
+};
+
+// Handle XAPIWrapper Logs
+ADL.XAPIWrapper.log = function(str) {
+    console.log(str);
+    if (str != "updating lrs object with new configuration")
+      notify({ message: str }, notificationErrorSettings);
 };
 
 stmts = [];
@@ -67,11 +81,11 @@ var groupExample2 = [
         },
         "objectType": "Agent"
     },
-    /*{
+    {
         "name": "Carol",
         "openid": "http://carol.openid.example.org/",
         "objectType": "Agent"
-    },*/
+    },
     {
         "name": "Tom",
         "mbox": "mailto:tom@example.com",
@@ -82,6 +96,175 @@ var groupExample2 = [
         "mbox_sha1sum": "ebd31e95054c018b10727de4db3ef2ec3a016ee9",
         "objectType": "Agent"
     }
+];
+
+var componentListChoicesExample = [
+    {
+        "id": "golf", 
+        "description": {
+            "en-US": "Golf Example"
+        }
+    },
+    {
+        "id": "facebook", 
+        "description": {
+            "en-US": "Facebook App"
+        }
+    },
+    {
+        "id": "tetris", 
+        "description": {
+            "en-US": "Tetris Example"
+        }
+    },
+    {
+        "id": "scrabble", 
+        "description": {
+            "en-US": "Scrabble Example"
+        }
+    }
+];
+
+var componentListScaleExample = [
+    {
+        "id": "likert_0", 
+        "description": {
+            "en-US": "It's OK"
+        }
+    },
+    {
+        "id": "likert_1", 
+        "description": {
+            "en-US": "It's Pretty Cool"
+        }
+    },
+    {
+        "id": "likert_2", 
+        "description": {
+            "en-US": "It's Damn Cool"
+        }
+    },
+    {
+        "id": "likert_3", 
+        "description": {
+            "en-US": "It's Gonna Change the World"
+        }
+    }
+];
+
+var componentListSourceExample = [
+    {
+        "id": "ben",
+        "description": {
+            "en-US": "Ben"
+        }
+    },
+    {
+        "id": "chris",
+        "description": {
+            "en-US": "Chris"
+        }
+    },
+    {
+        "id": "troy",
+        "description": {
+            "en-US": "Troy"
+        }
+    },
+    {
+        "id": "freddie",
+        "description": {
+            "en-US": "Freddie"
+        }
+    }
+];
+
+var componentListTargetExample = [
+    {
+        "id": "1",
+        "description": {
+            "en-US": "Swift Kick in the Grass"
+        }
+    },
+    {
+        "id": "2",
+        "description": {
+            "en-US": "We got Runs"
+        }
+    },
+    {
+        "id": "3",
+        "description": {
+            "en-US": "Duck"
+        }
+    },
+    {
+        "id": "4",
+        "description": {
+            "en-US": "Van Delay Industries"
+        }
+    }
+];
+
+var componentListStepsExample = [
+    {
+        "id": "pong", 
+        "description": {
+            "en-US": "Net pong matches won"
+        }
+    },
+    {
+        "id": "dg", 
+        "description": {
+            "en-US": "Strokes over par in disc golf at Liberty"
+            }
+        },
+    {
+        "id": "lunch", 
+        "description": {
+            "en-US": "Lunch having been eaten"
+        }
+    }
+];
+
+var correctResponsesPatternChoice = [
+    "golf[,]tetris"
+];
+
+var correctResponsesPatternSequencing = [
+    "tim[,]mike[,]ells[,]ben"
+];
+
+var correctResponsesPatternLikert = [
+    "likert_3"
+];
+
+var correctResponsesPatternMatching = [
+    "ben[.]3[,]chris[.]2[,]troy[.]4[,]freddie[.]1"
+];
+
+var correctResponsesPatternPerformance = [
+    "pong[.]1:[,]dg[.]:10[,]lunch[.]"
+];
+
+var correctResponsesPatternTrueFalse = [
+    "true"
+];
+
+var correctResponsesPatternFillIn = [
+    "Bob's your uncle"
+];
+
+var correctResponsesPatternLongFillIn = [
+    "{case_matters=false}{lang=en}To store and provide access to learning experiences."
+];
+
+var correctResponsesPatternNumeric = [
+    "4[:]"
+];
+
+var correctResponsesPatternOther = [
+    "(35.937432,-86.868896)"
 ];
 
 var substatementExample = {
@@ -107,6 +290,17 @@ var substatementExample = {
 };
 
 var contextActivitiesExample = {
+  "grouping": [
+    {
+      "definition": {
+        "name": {
+          "en-US": "Statement Builder Context"
+        }
+      },
+      "id": "http://adlnet.github.io/xapi-lab/index.html#context",
+      "objectType": "Activity"
+    }
+  ],
   "parent": [
     {
       "definition": {
@@ -119,15 +313,16 @@ var contextActivitiesExample = {
       },
       "id": "http://adlnet.github.io/xapi-lab",
       "objectType": "Activity"
-    },
+    }
+  ],
+  "category": [
     {
-      "definition": {
-        "name": {
-          "en-US": "Statement Builder Context"
-        }
-      },
-      "id": "http://adlnet.github.io/xapi-lab/index.html#context",
-      "objectType": "Activity"
+      "id": "http://example.com/xapi/profile/xapi-tool"
+    }
+  ],
+  "other": [
+    {
+      "id": "http://adlnet.github.io"
     }
   ]
 };
@@ -159,7 +354,11 @@ $(function(){
 
     $("#object-types > div").hide();
     $("#object-Activity").show();
+    
+    $("#component-lists > div").hide();
+    $("#correct-responses-pattern").hide();
 
+    $("#statement-timestamp").datetimepicker(dateTimeSettings);
     $("#search-statements-since-date").datetimepicker(dateTimeSettings);
     $("#search-statements-until-date").datetimepicker(dateTimeSettings);
     $("#get-document-since-date").datetimepicker(dateTimeSettings);
@@ -185,17 +384,49 @@ $(function(){
  
 $("body").on("click", ".collapser a", function (e) { e.preventDefault(); });
 
+$('#opener').on('click', function() {		
+  var $console = $('#console-panel');
+  if ($console.hasClass("visible")) {
+    $console.removeClass('visible').animate({'margin-right':'-400px'});
+  } else {
+    $console.addClass('visible').animate({'margin-right':'0px'});
+  }	
+  return false;	
+});
+
+// Allow links inside collapsing headers to be clicked
+$(".panel-heading.collapser a:not([data-toggle='collapse'])").on("click", function(event) {
+    event.stopPropagation();
+});
 
 /* Statement Builder */
 
-$("#statement-builder-values").change(function(e) {
-    if ($("#automatically-build").is(':checked')) {
-        previewStatement();
-    }
+$("#statement-builder-values").change(function() {
+    considerPreviewStatement();
 });
 
-$("#endpoint-values").validator();
-$("#statement-builder-values").validator();
+$("#statement-builder-values").validator({
+    custom: {
+        actor_agent_ifi: function ($el) {
+            return validateAgentIFI('#actor-Agent');
+        },
+        actor_group_ifi: function ($el) {
+            return validateGroupIFI('#actor-Group', '#actor-group-members');
+        },
+        object_agent_ifi: function ($el) {
+            return validateAgentIFI('#object-Agent');
+        },
+        object_group_ifi: function ($el) {
+            return validateGroupIFI('#object-Group', '#object-group-members');
+        }
+    },
+    errors: {
+        actor_agent_ifi: 'Only use one IFI',
+        actor_group_ifi: 'Only use one IFI, or include group members for Anonymous Group',
+        object_agent_ifi: 'Only use one IFI',
+        object_group_ifi: 'Only use one IFI, or include group members for Anonymous Group'
+    }
+});
 $("#statement-search-values").validator();
 $("#dmar-values").validator();
 
@@ -207,11 +438,13 @@ $("#actor-type").change(function() {
 
 $("#actor-agent-account-example").click(function(e) {
     $("#actor-agent-account").val(JSON.stringify(accountAgentExample, undefined, 4));
+    considerPreviewStatement();
     e.preventDefault();
 });
 
 $("#actor-group-account-example").click(function(e) {
     $("#actor-group-account").val(JSON.stringify(accountGroupExample, undefined, 4));
+    considerPreviewStatement();
     e.preventDefault();
 });
 
@@ -227,23 +460,166 @@ $("#object-type").change(function() {
     $("#object-types > #object-" + objectType).show();
 });
 
+$("#object-activity-interaction-type").change(function() {
+    var objectActivityInteractionType = $(this).val();
+    if (objectActivityInteractionType != "") {
+      $("#object-activity-type").val("http://adlnet.gov/expapi/activities/cmi.interaction");
+      $("#correct-responses-pattern").show();
+    } else {
+      $("#object-activity-type").val("");
+      $("#correct-responses-pattern").hide();
+    }
+    $("#component-lists > div").hide();
+    var componentLists = [];
+    switch(objectActivityInteractionType) {
+      case "choice":
+        componentLists = ['choices'];
+      break;
+      case "sequencing":
+        componentLists = ['choices'];
+      break;
+      case "likert":
+        componentLists = ['scale'];
+      break;
+      case "matching":
+        componentLists = ['source','target'];
+      break;
+      case "performance":
+        componentLists = ['steps'];
+      break;
+      default:
+      break;
+    }
+    $("#component-lists textarea").val("");
+    $("#object-activity-correct-responses-pattern").val("");
+    componentLists.forEach(function(e, i, a) {
+      $("#component-lists > #component-list-" + e).show();
+    });
+});
+
+$("#object-activity-component-list-choices-example").click(function(e) {
+    $("#object-activity-component-list-choices").val(JSON.stringify(componentListChoicesExample, undefined, 4));
+    considerPreviewStatement();
+    e.preventDefault();
+});
+
+$("#object-activity-component-list-scale-example").click(function(e) {
+    $("#object-activity-component-list-scale").val(JSON.stringify(componentListScaleExample, undefined, 4));
+    considerPreviewStatement();
+    e.preventDefault();
+});
+
+$("#object-activity-component-list-source-example").click(function(e) {
+    $("#object-activity-component-list-source").val(JSON.stringify(componentListSourceExample, undefined, 4));
+    considerPreviewStatement();
+    e.preventDefault();
+});
+
+$("#object-activity-component-list-target-example").click(function(e) {
+    $("#object-activity-component-list-target").val(JSON.stringify(componentListTargetExample, undefined, 4));
+    considerPreviewStatement();
+    e.preventDefault();
+});
+
+$("#object-activity-component-list-steps-example").click(function(e) {
+    $("#object-activity-component-list-steps").val(JSON.stringify(componentListStepsExample, undefined, 4));
+    considerPreviewStatement();
+    e.preventDefault();
+});
+
+$("#object-activity-correct-responses-pattern-example").click(function(e) {
+    var interactionType = $("#object-activity-interaction-type").val();
+    var exampleJSON = "";
+    switch(interactionType) {
+      case "choice":
+        exampleJSON = correctResponsesPatternChoice;
+      break;
+      case "sequencing":
+        exampleJSON = correctResponsesPatternSequencing;
+      break;
+      case "likert":
+        exampleJSON = correctResponsesPatternLikert;
+      break;
+      case "matching":
+        exampleJSON = correctResponsesPatternMatching;
+      break;
+      case "performance":
+        exampleJSON = correctResponsesPatternPerformance;
+      break;
+      case "true-false":
+        exampleJSON = correctResponsesPatternTrueFalse;
+      break;
+      case "fill-in":
+        exampleJSON = correctResponsesPatternFillIn;
+      break;
+      case "long-fill-in":
+        exampleJSON = correctResponsesPatternLongFillIn;
+      break;
+      case "numeric":
+        exampleJSON = correctResponsesPatternNumeric;
+      break;
+      case "other":
+        exampleJSON = correctResponsesPatternOther;
+      break;
+      default:
+      break;
+    }
+    $("#object-activity-correct-responses-pattern").val(JSON.stringify(exampleJSON, undefined, 4));
+    considerPreviewStatement();
+    e.preventDefault();
+});
+
 $("#object-agent-account-example").click(function(e) {
     $("#object-agent-account").val(JSON.stringify(accountAgentExample, undefined, 4));
+    considerPreviewStatement();
     e.preventDefault();
 });
 
 $("#object-group-account-example").click(function(e) {
     $("#object-group-account").val(JSON.stringify(accountGroupExample, undefined, 4));
+    considerPreviewStatement();
     e.preventDefault();
+});
+
+$(".duration-segment").change(function(e) {
+    var resultDurationYears = $("#result-duration-years").val();
+    var resultDurationMonths = $("#result-duration-months").val();
+    var resultDurationWeeks = $("#result-duration-weeks").val();
+    var resultDurationDays = $("#result-duration-days").val();
+    var resultDurationHours = $("#result-duration-hours").val();
+    var resultDurationMinutes = $("#result-duration-minutes").val();
+    var resultDurationSeconds = $("#result-duration-seconds").val();
+    var resultDurationMilliseconds = $("#result-duration-milliseconds").val();
+
+    var duration = "P";
+    if (resultDurationYears != "") { duration += resultDurationYears + "Y"; }
+    if (resultDurationMonths != "") { duration += resultDurationMonths + "M"; }
+    if (resultDurationWeeks != "") { duration += resultDurationWeeks + "W"; }
+    if (resultDurationDays != "") { duration += resultDurationDays + "D"; }
+
+    if (resultDurationHours != "" || resultDurationMinutes != "" || resultDurationSeconds != "" || resultDurationMilliseconds != "") { duration += "T"; }
+
+    if (resultDurationHours != "") { duration += resultDurationHours + "H"; }
+    if (resultDurationMinutes != "") { duration += resultDurationMinutes + "M"; }
+    if (resultDurationSeconds != "" || resultDurationMilliseconds != "") {
+      if (resultDurationSeconds == "" && resultDurationMilliseconds != "") { resultDurationSeconds = 0; }
+      if (resultDurationMilliseconds.length == 1) { resultDurationMilliseconds = "0" + resultDurationMilliseconds; }
+      if (resultDurationSeconds == "" || (resultDurationSeconds != "" && resultDurationMilliseconds != "")) { resultDurationMilliseconds = "." + resultDurationMilliseconds; }
+      duration += resultDurationSeconds + resultDurationMilliseconds + "S";
+    }
+
+    $("#result-duration").val(duration);
 });
 
 $("#context-team-members-example").click(function(e) {
     $("#context-team-members").val(JSON.stringify(groupExample, undefined, 4));
+    considerPreviewStatement();
     e.preventDefault();
 });
 
 $("#context-context-activities-example").click(function(e) {
     $("#context-context-activities").val(JSON.stringify(contextActivitiesExample, undefined, 4));
+    considerPreviewStatement();
     e.preventDefault();
 });
 
@@ -260,7 +636,8 @@ $("#validate-json").click(function(e) {
     var r = validateJSON(editor.getValue());
     var whichNotificationSettings = (r == true) ? notificationSettings : notificationErrorSettings;
     var notificationStatus = (r == true) ? "JSON is valid" : "JSON is <em>NOT</em> valid";
-    $.growl({ title: notificationStatus }, whichNotificationSettings);
+    notify({ message: notificationStatus }, whichNotificationSettings);
+    btnValidateJSON(r);
     e.preventDefault();
 });
 
@@ -376,10 +753,60 @@ $("#clear-deleted-documents").click(function(e) {
     e.preventDefault();
 });
 
+/* Endpoint */
+
+$("#endpoint-values").validator();
+
+// Update statement viewer links to pass auth via query string
+$("#endpoint-values").keyup(function() {
+    var root = $(".statement-viewer").attr("rel");
+    console.log(root);
+    var endpoint = $("#endpoint").val();
+    var username = $("#username").val();
+    var password = $("#password").val();
+    var auth = "Basic%20" + toBase64(username + ":" + password);
+    $(".statement-viewer").attr("href", root + "?endpoint=" + endpoint + "&auth=" + auth);
+});
 
 /*
  * Functions
  */
+ 
+// Helper Functions
+
+// Form Validation
+function validateAgentIFI(div) {
+    var inputs = $('input, textarea', div + ' .ifi').filter(function() {
+        return $.trim( this.value ).length > 0;
+    });
+
+    //console.log(inputs.length);
+    if (inputs.length > 1) { return false; }
+    return true;
+}
+
+function validateGroupIFI(div, members) {
+    var inputs = $('input, textarea', div + ' .ifi').filter(function() {
+        return $.trim( this.value ).length > 0;
+    });
+
+    //console.log(inputs.length);
+    if (inputs.length == 0 && $(members).val() == "") { return false; }
+    if (inputs.length > 1) { return false; }
+    return true;
+}
+
+// Notification
+function notify(message, settings) {
+  // message is a JSON object with message and optional title
+  $.notify(message, settings);
+  if (message.hasOwnProperty('title')) {
+      message.message = message.title + "<br>" + message.message;
+  }
+  var curDate = moment().format('MM-DD-YYYY HH:mm:ssa');
+  $("#console-history").prepend('<div class="alert alert-' + settings.type + ' alert-dismissible" role="alert"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>' + message.message + '<br /><small>' + curDate + '</small></div>');
+  $("#console-history").prepend();
+}
 
 // Override any credentials put in the XAPIWrapper.js
 function setupConfig() {
@@ -417,6 +844,16 @@ function buildStatement() {
     var objectActivityName = $("#object-activity-name").val();
     var objectActivityDescription = $("#object-activity-description").val();
     var objectActivityLanguage = $("#object-activity-language").val();
+    var objectActivityType = $("#object-activity-type").val();
+    var objectActivityMoreInfo = $("#object-activity-more-info").val();
+    var objectActivityInteractionType = $("#object-activity-interaction-type").val();
+    var objectActivityComponentListChoices = $("#object-activity-component-list-choices").val();
+    var objectActivityComponentListScale = $("#object-activity-component-list-scale").val();
+    var objectActivityComponentListSource = $("#object-activity-component-list-source").val();
+    var objectActivityComponentListTarget = $("#object-activity-component-list-target").val();
+    var objectActivityComponentListSteps = $("#object-activity-component-list-steps").val();
+    var objectActivityCorrectResponsesPattern = $("#object-activity-correct-responses-pattern").val();
+    var objectActivityExtensions = $("#object-activity-extensions").val();
     var objectAgentEmail = $("#object-agent-email").val();
     var objectAgentEmailSha1 = $("#object-agent-email-sha1").val();
     var objectAgentOpenID = $("#object-agent-openid").val();
@@ -449,6 +886,7 @@ function buildStatement() {
     var contextPlatform = $("#context-platform").val();
     var contextLanguage = $("#context-language").val();
     var contextStatement = $("#context-statement").val();
+    var contextExtensions = $("#context-extensions").val();
     var attachmentUsageType = $("#attachment-usage-type").val();
     var attachmentDisplay = $("#attachment-display").val();
     var attachmentDescription = $("#attachment-description").val();
@@ -457,8 +895,15 @@ function buildStatement() {
     var attachmentLength = $("#attachment-length").val();
     var attachmentSha2 = $("#attachment-sha2").val();
     var attachmentFileURL = $("#attachment-file-url").val();
+    var statementTimestamp = $("#statement-timestamp input").val();
+    var statementID = $("#statement-id").val();
+    var statementVersion = $("#statement-version").val();
 
     var stmt = {};
+
+    if (statementTimestamp != "") { stmt['timestamp'] = moment(new Date(statementTimestamp)).format(); }
+    if (statementID != "") { stmt['id'] = statementID; }
+    if (statementVersion != "") { stmt['version'] = statementVersion; }
 
     stmt['actor'] = {};
     switch(actorType) {
@@ -477,7 +922,7 @@ function buildStatement() {
         if (actorGroupOpenID != "") { stmt['actor']['openid'] = actorGroupOpenID; }
         if (actorGroupAccount != "") { stmt['actor']['account'] = $.parseJSON(actorGroupAccount); }
         if (actorGroupName != "") { stmt['actor']['name'] = actorGroupName; }
-        stmt['actor']['member'] = $.parseJSON(actorGroupMembers);
+        if (actorGroupMembers != "") { stmt['actor']['member'] = $.parseJSON(actorGroupMembers); }
         break;
       default:
     }
@@ -493,7 +938,7 @@ function buildStatement() {
     switch(objectType) {
       case "Activity":
         stmt['object']['id'] = objectActivityID;
-        if (objectActivityName != "" || objectActivityDescription != "") {
+        if (/.+/.test([ objectActivityName, objectActivityDescription, objectActivityType, objectActivityMoreInfo, objectActivityExtensions ].join(""))) {
             stmt['object']['definition'] = {};
         }
         if (objectActivityName != "" && objectActivityLanguage != "") {
@@ -504,6 +949,16 @@ function buildStatement() {
             stmt['object']['definition']['description'] = {};
             stmt['object']['definition']['description'][objectActivityLanguage] = objectActivityDescription;
         }
+        if (objectActivityType != "") { stmt['object']['definition']['type'] = objectActivityType; }
+        if (objectActivityMoreInfo != "") { stmt['object']['definition']['moreInfo'] = objectActivityMoreInfo; }
+        if (objectActivityInteractionType != "") { stmt['object']['definition']['interactionType'] = objectActivityInteractionType; }
+        if (objectActivityComponentListChoices != "") { stmt['object']['definition']['choices'] = $.parseJSON(objectActivityComponentListChoices); }
+        if (objectActivityComponentListScale != "") { stmt['object']['definition']['scale'] = $.parseJSON(objectActivityComponentListScale); }
+        if (objectActivityComponentListSource != "") { stmt['object']['definition']['source'] = $.parseJSON(objectActivityComponentListSource); }
+        if (objectActivityComponentListTarget != "") { stmt['object']['definition']['target'] = $.parseJSON(objectActivityComponentListTarget); }
+        if (objectActivityComponentListSteps != "") { stmt['object']['definition']['steps'] = $.parseJSON(objectActivityComponentListSteps); }
+        if (objectActivityCorrectResponsesPattern != "") { stmt['object']['definition']['correctResponsesPattern'] = $.parseJSON(objectActivityCorrectResponsesPattern); }
+        if (objectActivityExtensions != "") { stmt['object']['definition']['extensions'] = $.parseJSON(objectActivityExtensions); }
         break;
       case "Agent":
         // LRS will reject if more than one IFI is in the statement
@@ -520,7 +975,7 @@ function buildStatement() {
         if (objectGroupOpenID != "") { stmt['object']['openid'] = objectGroupOpenID; }
         if (objectGroupAccount != "") { stmt['object']['account'] = $.parseJSON(objectGroupAccount); }
         if (objectGroupName != "") { stmt['object']['name'] = objectGroupName; }
-        stmt['object']['member'] = $.parseJSON(objectGroupMembers);
+        if (objectGroupMembers != "") { stmt['object']['member'] = $.parseJSON(objectGroupMembers); }
         break;
       case "StatementRef":
         stmt['object']['id'] = objectStatementRef;
@@ -533,7 +988,7 @@ function buildStatement() {
     
     stmt['object']['objectType'] = objectType;
 
-    if ( resultScaledScore != "" || resultRawScore != "" || resultMinScore != "" || resultMaxScore != "" || resultSuccess != "" || resultCompletion != "" || resultResponse != "" || resultDuration != "" || resultExtensions != "" ) {
+    if (/.+/.test([ resultScaledScore, resultRawScore, resultMinScore, resultMaxScore, resultSuccess, resultCompletion, resultResponse, resultDuration, resultExtensions ].join(""))) {
         stmt['result'] = {};
         if ( resultScaledScore != "" || resultRawScore != "" || resultMinScore != "" || resultMaxScore != "" ) {
             stmt['result']['score'] = {};
@@ -549,7 +1004,7 @@ function buildStatement() {
         if (resultExtensions != "") { stmt['result']['extensions'] = $.parseJSON(resultExtensions); }
     }
 
-    if ( contextRegistrationID != "" || contextInstructorEmail != "" || contextInstructorName != "" || contextTeamName != "" || contextTeamMembers != "" || contextContextActivities != "" || contextRevision != "" || contextPlatform != "" || contextLanguage != "" || contextStatement != "" ) {
+    if (/.+/.test([ contextRegistrationID, contextInstructorEmail, contextInstructorName, contextTeamName, contextTeamMembers, contextContextActivities, contextRevision, contextPlatform, contextLanguage, contextStatement, contextExtensions ].join(""))) {
         stmt['context'] = {};
         if (contextRegistrationID != "") { stmt['context']['registration'] = contextRegistrationID; }
         if (contextInstructorEmail != "" || contextInstructorName != "") {
@@ -573,9 +1028,10 @@ function buildStatement() {
             stmt['context']['statement']['id'] = contextStatement;
             stmt['context']['statement']['objectType'] = "Group";
         }
+        if (contextExtensions != "") { stmt['context']['extensions'] = $.parseJSON(contextExtensions); }
     }
 
-    if ( attachmentDisplay != "" || attachmentDescription != "" || attachmentLanguage != "" || attachmentContentType != "" || attachmentLength != "" || attachmentSha2 != "" ||attachmentFileURL != "" ) {
+    if (/.+/.test([ attachmentDisplay, attachmentDescription, attachmentLanguage, attachmentContentType, attachmentLength, attachmentSha2, attachmentFileURL ].join(""))) {
       stmt['attachments'] = [];
       var attachment = {};
       attachment['usageType'] = attachmentUsageType;
@@ -608,6 +1064,13 @@ function validateJSON(json) {
     }
 }
 
+// Change the class of the JSON Button
+function btnValidateJSON(bool) {
+    if (bool != true)
+        $("#validate-json").removeClass("btn-success").addClass("btn-danger");
+    else
+        $("#validate-json").removeClass("btn-danger").addClass("btn-success");
+}
 
 /*  Statement Manipulation and Response -- Sending */
 
@@ -619,6 +1082,13 @@ function previewStatement() {
     editor.clearSelection(); // or session.setValue
 }
 
+// Generate statement and preview in the editor if "automatically build is true
+function considerPreviewStatement() {
+    if ($("#automatically-build").is(':checked')) {
+        previewStatement();
+    }
+}
+
 // Send statement to the LRS
 function sendStatement() {
     setupConfig();
@@ -626,7 +1096,7 @@ function sendStatement() {
     var stmt = editor.getValue(); // or session.getValue
 
     if (validateJSON(stmt) != true) { // JSON is invalid
-        $.growl({ title: "invalid JSON, cannot send" }, notificationErrorSettings);
+        notify({ message: "invalid JSON, cannot send" }, notificationErrorSettings);
         return false;
     }
 
@@ -637,7 +1107,7 @@ function sendStatement() {
         //console.log(obj);
         // notification
         if (r.status == 200) {
-            $.growl({ title: "Status " + r.status + " " + r.statusText + ": ", message: "<b><em>" + xstmt.verb.display['en-US'] + "</em></b> statement sent successfully to LRS" }, notificationSettings);
+            notify({ title: "Status " + r.status + " " + r.statusText + ": ", message: "<b><em>" + xstmt.verb.display['en-US'] + "</em></b> statement sent successfully to LRS" }, notificationSettings);
         }
         var prettyStatement = styleStatementView(xstmt.id, xstmt);
         $("#sent-statements").append(prettyStatement);
@@ -650,7 +1120,7 @@ function queueStatement(stmt) {
     var stmt = editor.getValue(); // or session.getValue
 
     if (validateJSON(stmt) != true) { // JSON is invalid
-        $.growl({ title: "invalid JSON, cannot add to queue" }, notificationErrorSettings);
+        notify({ message: "invalid JSON, cannot add to queue" }, notificationErrorSettings);
         return false;
     }
     
@@ -676,7 +1146,7 @@ function sendStatementQueue() {
         //console.log(obj);
         // notification
         if (r.status == 200) {
-            $.growl({ title: "Status " + r.status + " " + r.statusText + ": ", message: "<b><em>Statement Queue</em></b> sent successfully to LRS" }, notificationSettings);
+            notify({ title: "Status " + r.status + " " + r.statusText + ": ", message: "<b><em>Statement Queue</em></b> sent successfully to LRS" }, notificationSettings);
             //console.log(r, obj);
 
             var prettyStatement = styleStatementsView(obj[0], stmts);
@@ -765,7 +1235,7 @@ function getStatementsWithSearch() {
                 var length = 1;
             }
 
-            $.growl({ title: "Status " + r.status + " " + r.statusText + ": ", message: "statements received successfully from LRS" }, notificationSettings);
+            notify({ title: "Status " + r.status + " " + r.statusText + ": ", message: "statements received successfully from LRS" }, notificationSettings);
 
             if (length > 0) {
                 if (stmt) {
@@ -802,7 +1272,7 @@ function sendState() {
     // callback
 
     ADL.XAPIWrapper.sendState(activityId, {"mbox":"mailto:" + actorEmail}, stateId, null, stateValue, null, null, function(r) {
-        $.growl({ title: "Status " + r.status + " " + r.statusText }, notificationSettings);
+        notify({ message: "Status " + r.status + " " + r.statusText }, notificationSettings);
         //$("#sent-documents").append("<p>Sent State <b>" + stateId + "</b>: " + stateValue + "</p>");
         if (validateJSON(stateValue) == true) {
           stateValue = JSON.stringify($.parseJSON(stateValue), undefined, 4);
@@ -826,8 +1296,8 @@ function sendActivityProfile() {
     // noneMatchHash
     // callback
 
-    ADL.XAPIWrapper.sendActivityProfile(activityId, profileId, profileValue, null, null, function(r) {
-        $.growl({ title: "Status " + r.status + " " + r.statusText }, notificationSettings);
+    ADL.XAPIWrapper.sendActivityProfile(activityId, profileId, profileValue, null, "*", function(r) {
+        notify({ message: "Status " + r.status + " " + r.statusText }, notificationSettings);
         //$("#sent-documents").append("<p>Sent Activity Profile <b>" + profileId + "</b>: " + profileValue + "</p>");
         if (validateJSON(profileValue) == true) {
           profileValue = JSON.stringify($.parseJSON(profileValue), undefined, 4);
@@ -852,7 +1322,7 @@ function sendAgentProfile() {
     // callback
 
     ADL.XAPIWrapper.sendAgentProfile({"mbox":"mailto:" + actorEmail}, profileId, profileValue, null, "*", function(r) {
-        $.growl({ title: "Status " + r.status + " " + r.statusText }, notificationSettings);
+        notify({ message: "Status " + r.status + " " + r.statusText }, notificationSettings);
         //$("#sent-documents").append("<p>Sent Agent Profile <b>" + profileId + "</b>: " + profileValue + "</p>");
         if (validateJSON(profileValue) == true) {
           profileValue = JSON.stringify($.parseJSON(profileValue), undefined, 4);
@@ -886,7 +1356,10 @@ function getState() {
     // callback
 
     ADL.XAPIWrapper.getState(activityId, {"mbox":"mailto:" + actorEmail}, stateId, null, sinceDate, function(r) {
-        $.growl({ title: "Status " + r.status + " " + r.statusText }, notificationSettings);
+        if (r.status == 404)
+          notify({ message: "Status " + r.status + " " + r.statusText }, notificationWarningSettings);
+        else
+          notify({ message: "Status " + r.status + " " + r.statusText }, notificationSettings);
         //$("#received-documents").append("<p>Received State <b>" + stateId + "</b>: " + r.response + "</p>");
         if (validateJSON(r.response) != true) {
           var stateValue = r.response;
@@ -912,7 +1385,10 @@ function getActivityProfile() {
     // callback
 
     ADL.XAPIWrapper.getActivityProfile(activityId, profileId, sinceDate, function(r) {
-        $.growl({ title: "Status " + r.status + " " + r.statusText }, notificationSettings);
+        if (r.status == 404)
+          notify({ message: "Status " + r.status + " " + r.statusText }, notificationWarningSettings);
+        else
+          notify({ message: "Status " + r.status + " " + r.statusText }, notificationSettings);
         //$("#received-documents").append("<p>Received Activity Profile <b>" + profileId + "</b>: " + r.response + "</p>");
         if (validateJSON(r.response) != true) {
           var profileValue = r.response;
@@ -938,7 +1414,10 @@ function getAgentProfile() {
     // callback
 
     ADL.XAPIWrapper.getAgentProfile({"mbox":"mailto:" + actorEmail}, profileId, sinceDate, function(r) {
-        $.growl({ title: "Status " + r.status + " " + r.statusText }, notificationSettings);
+        if (r.status == 404)
+          notify({ message: "Status " + r.status + " " + r.statusText }, notificationWarningSettings);
+        else
+          notify({ message: "Status " + r.status + " " + r.statusText }, notificationSettings);
         //$("#received-documents").append("<p>Received Agent Profile <b>" + profileId + "</b>: " + r.response + "</p>");
         if (validateJSON(r.response) != true) {
           var profileValue = r.response;
@@ -980,7 +1459,7 @@ function deleteState() {
     // callback
 
     ADL.XAPIWrapper.deleteState(activityId, {"mbox":"mailto:" + actorEmail}, stateId, null, null, null, function(r) {
-        $.growl({ title: "Status " + r.status + " " + r.statusText }, notificationSettings);
+        notify({ message: "Status " + r.status + " " + r.statusText }, notificationSettings);
         if (r.status == 204) {
             $("#deleted-documents").append("<p>Deleted State: <b>" + stateId + "</b></p>");
         }
@@ -999,7 +1478,7 @@ function deleteActivityProfile() {
     // callback
 
     ADL.XAPIWrapper.deleteActivityProfile(activityId, profileId, null, null, function(r) {
-        $.growl({ title: "Status " + r.status + " " + r.statusText }, notificationSettings);
+        notify({ message: "Status " + r.status + " " + r.statusText }, notificationSettings);
         if (r.status == 204) {
             $("#deleted-documents").append("<p>Deleted Activity Profile: <b>" + profileId + "</b></p>");
         }
@@ -1018,7 +1497,7 @@ function deleteAgentProfile() {
     // callback
 
     ADL.XAPIWrapper.deleteAgentProfile({"mbox":"mailto:" + actorEmail}, profileId, null, null, function(r) {
-        $.growl({ title: "Status " + r.status + " " + r.statusText }, notificationSettings);
+        notify({ message: "Status " + r.status + " " + r.statusText }, notificationSettings);
         $("#deleted-documents").append("<p>" + r.response + "</p>");
         if (r.status == 204) {
             $("#deleted-documents").append("<p>Deleted Agent Profile: <b>" + profileId + "</b></p>");
