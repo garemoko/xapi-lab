@@ -1,13 +1,13 @@
-.panel-primary>.panel-heading {
+#bootstrap .panel-primary>.panel-heading {
     background-color: #f05023;
     border-color: #f05023;
 }
 
-.panel-primary {
+#bootstrap .panel-primary {
   border-color: #f05023;
 }
 
-.btn {
+#bootstrap .btn {
     font-size: 16px;
     text-shadow: 0px 0px 0px #d0d0d0;
     font-family: 'Helvetica';
@@ -21,67 +21,68 @@
     margin-top: 15px;
 }
 
-.btn-primary {
+#bootstrap .btn-primary {
     color: #fff;
     background-color: #3d3a39;
 }
 
-.btn-primary:hover, .btn-info , .btn-info:hover, .btn-info:focus  {
+#bootstrap .btn-primary:hover, #bootstrap .btn-primary:focus, #bootstrap .btn-info , #bootstrap .btn-info:hover, #bootstrap .btn-info:focus  {
     background-color: #f05023;
     border-color: #f05023;
 }
 
-.bg-primary{
+#bootstrap .bg-primary{
     background-color: #f05023;
 }
 
-a:hover, a:active, a:visited  {
+#bootstrap a:hover, #bootstrap a:active, #bootstrap a:visited  {
     color: #f05023;
 }
 
-.panel-title a:hover, .panel-title a:active, .panel-title a:visited, .blue-button:hover, .blue-button:active, .blue-button:visited {
+#bootstrap .panel-title a:hover, #bootstrap .panel-title a:active, #bootstrap .panel-title a:visited, 
+#bootstrap .blue-button:hover, #bootstrap .blue-button:active, #bootstrap .blue-button:visited {
     color: #fff;
 }
 
-.panel-info>.panel-heading {
+#bootstrap .panel-info>.panel-heading {
     color: #000;
     background-color: #b7b7b7;
     border-color: #b7b7b7;
 }
 
-.panel-info {
+#bootstrap .panel-info {
   border-color: #b7b7b7;
 }
 
-.panel-info>.panel-heading a:hover, .panel-default>.panel-heading a:hover {
+#bootstrap .panel-info>.panel-heading a:hover, #bootstrap .panel-default>.panel-heading a:hover {
     color: #000;
 }
 
-.actionbox .box-i { 
+#bootstrap .actionbox .box-i { 
     padding: 25px 10px 28px;
     margin-top:30px;
 }
 
-.advertbox .box-i { 
+#bootstrap .advertbox .box-i { 
     width: 80%;
     border-color: #f05023;
     position: relative;
 }
 
-.advertbox .box-i strong{
+#bootstrap .advertbox .box-i strong{
     font-weight: 700;
 }
 
-.advertbox .box-i .blue-button{
+#bootstrap .advertbox .box-i .blue-button{
     font-weight: 700;
     width: 150px;
 }
 
-.advertbox h2 {
+#bootstrap .advertbox h2 {
     padding: 0 20px
 }
 
-.advertbox .box-i:after {
+#bootstrap .advertbox .box-i:after {
     content: "Sponsor Link";
     top: 0;
     right: 0;
@@ -98,4 +99,49 @@ a:hover, a:active, a:visited  {
     border-radius: .25em;
     background-color: #f05023;
 }
-    
+
+#bootstrap #console-panel {
+  position: absolute;
+  right: 0px;
+}
+
+#bootstrap #main-container {
+    width:870px;
+    margin-left: 0;
+}
+
+#bootstrap #opener {
+  padding: 6px 12px;
+}
+
+#bootstrap .collapse {
+  color: initial;
+  text-decoration: initial; 
+  cursor: initial; 
+  font-size: initial; 
+  line-spacing: initial;
+}
+
+#bootstrap .blue-button, #bootstrap .blue-button:focus {
+  color: #fff;
+  font-size: 16px;
+  text-shadow: 0px 0px 0px #d0d0d0;
+  font-family: 'HelveticaBold', Helvetica, Arial, sans-serif;
+  height: 37px;
+  line-height: 37px;
+  padding: 0 13px;
+  border-radius: 3px;
+  background-color: #3d3a39;
+}
+
+#bootstrap a, #bootstrap a:focus {
+  color: #f05023;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.alert {
+    background-color: #f5f5f5;
+}
+
+ 

@@ -1,39 +1,39 @@
-:focus {outline:none !important;} /* remove dotted outlines in FF */
-body { overflow-x: hidden; }
-textarea.form-control {
+#bootstrap :focus {outline:none !important;} /* remove dotted outlines in FF */
+#bootstrap { overflow-x: hidden; }
+#bootstrap textarea.form-control {
   font-size:10px;
   font-family:courier;
 }
-.page-header i {
+#bootstrap .page-header i {
   color: #94D5F5;
   text-shadow: 1px 1px 1px #ccc;
 }
-#editor { 
+#bootstrap #editor { 
     /*width:530px;*/
     height:460px;
     border:1px solid #ccc;
     margin-bottom:10px;
 }
-.panel-heading.collapser a[data-toggle="collapse"]:after {
+#bootstrap .panel-heading.collapser a[data-toggle="collapse"]:after {
     font-family:'Glyphicons Halflings';
     content:"\e114";
     float: right;
 
 }
-.panel-heading.collapser .pull-right a {
+#bootstrap .panel-heading.collapser .pull-right a {
   margin-right: 6px;
 }
-.panel-heading.collapser a.collapsed:after {
+#bootstrap .panel-heading.collapser a.collapsed:after {
     content:"\e080";
 }
-.tab-pane {
+#bootstrap .tab-pane {
     padding-top:20px;
 }
-pre.prettyprint {
+#bootstrap pre.prettyprint {
     font-size:10px;
     max-height:500px;
 }
-[data-notify="progressbar"] {
+#bootstrap [data-notify="progressbar"] {
 	margin-bottom: 0px;
 	position: absolute;
 	bottom: 0px;
@@ -42,7 +42,7 @@ pre.prettyprint {
 	height: 1px;
 }
 
-#console-panel {
+#bootstrap #console-panel {
     position:fixed;
     right:0;
     width:400px;
@@ -53,18 +53,18 @@ pre.prettyprint {
     margin-right:-400px;
     z-index:1000;
 }
-#console-panel h4 {
+#bootstrap #console-panel h4 {
   margin-top:0px;
 }
-#opener {
+#bootstrap #opener {
     float:left;
     margin:-10px 0px 0px -49px;
     border-radius:0;
 }
-#console-history {
+#bootstrap #console-history {
   overflow: auto;
   height: 95%;
 }
-#console-history .alert small {
+#bootstrap #console-history .alert small {
   opacity: 0.5;
 }
