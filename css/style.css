@@ -1,5 +1,5 @@
 #bootstrap :focus {outline:none !important;} /* remove dotted outlines in FF */
-#bootstrap { overflow-x: hidden; }
+#bootstrap { overflow: hidden; }
 #bootstrap textarea.form-control {
   font-size:10px;
   font-family:courier;

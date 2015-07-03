@@ -39,7 +39,7 @@
     color: #f05023;
 }
 
-#bootstrap .panel-title a:hover, #bootstrap .panel-title a:active, #bootstrap .panel-title a:visited, 
+#bootstrap .panel-title a, #bootstrap .panel-title a:focus, #bootstrap .panel-title a:hover, #bootstrap .panel-title a:active, #bootstrap .panel-title a:visited, 
 #bootstrap .blue-button:hover, #bootstrap .blue-button:active, #bootstrap .blue-button:visited {
     color: #fff;
 }
@@ -48,6 +48,9 @@
     color: #000;
     background-color: #b7b7b7;
     border-color: #b7b7b7;
+}
+#bootstrap .panel-default>.panel-heading>.panel-title>a, #bootstrap .panel-info>.panel-heading>.panel-title>a{
+  color: #000;
 }
 
 #bootstrap .panel-info {
@@ -59,11 +62,12 @@
 }
 
 #bootstrap .actionbox .box-i { 
-    padding: 25px 10px 28px;
+    padding: 0 10px 28px;
     margin-top:30px;
 }
 
 #bootstrap .advertbox .box-i { 
+    padding-top: 25px;
     width: 80%;
     border-color: #f05023;
     position: relative;
@@ -82,8 +86,8 @@
     padding: 0 20px
 }
 
-#bootstrap .advertbox .box-i:after {
-    content: "Sponsor Link";
+/*#bootstrap .advertbox .box-i:after {
+    content: "Our Products";
     top: 0;
     right: 0;
     position: absolute;
@@ -98,7 +102,7 @@
     vertical-align: baseline;
     border-radius: .25em;
     background-color: #f05023;
-}
+}*/
 
 #bootstrap #console-panel {
   position: absolute;
