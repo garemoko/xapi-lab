@@ -4,7 +4,7 @@
     <link rel="stylesheet" type="text/css" href="../wp-content/assets/xapi-lab/css/bootstrap-datetimepicker.min.css" />
     <link rel="stylesheet" type="text/css" href="../wp-content/assets/xapi-lab/css/animate.css">
     <link rel="stylesheet" type="text/css" href="../wp-content/assets/xapi-lab/css/style.css">
-    <link rel="stylesheet" type="text/css" href="http://tincanapi.com/wp-content/themes/tincanapi/style.css">
+    <link rel="stylesheet" type="text/css" href="../wp-content/themes/tincanapi/style.css">
     <link rel="stylesheet" type="text/css" href="../wp-content/assets/xapi-lab/css/tincan.css">
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
@@ -654,49 +654,51 @@ If you already have a Tin Can statement and want to test the validity of it (or 
                                             <input type="text" class="form-control" aria-describedby="Duration" placeholder="P3Y6M4DT12H30M5S" id="result-duration" />
                                             <span class="help-block"><a href="https://en.wikipedia.org/wiki/ISO_8601#Durations" target="_blank">ISO 8601 Duration</a></span>
                                           </div>
-                                          <div class="form-group col-md-1">
-                                            <label>Build</label>
-                                            <p style="margin-top:6px;">string <i class="fa fa-arrow-right"></i></p>
-                                          </div>
+                                          <div class="row col-md-9">
+                                            <div class="form-group col-md-2">
+                                              <label>Build</label>
+                                              <p style="margin-top:6px;">string <i class="fa fa-arrow-right"></i></p>
+                                            </div>
 
-                                          <div class="form-group col-md-1">
-                                            <label class="control-label" for="result-duration-years">Years</label>
-                                            <input type="number" min="0" max="99999" step="1" class="form-control duration-segment" aria-describedby="Duration Years" id="result-duration-years" />
-                                          </div>
+                                            <div class="form-group col-md-2">
+                                              <label class="control-label" for="result-duration-years">Years</label>
+                                              <input type="number" min="0" max="99999" step="1" class="form-control duration-segment" aria-describedby="Duration Years" id="result-duration-years" />
+                                            </div>
 
-                                          <div class="form-group col-md-1">
-                                            <label class="control-label" for="result-duration-months">Months</label>
-                                            <input type="number" min="0" max="12" step="1"  class="form-control duration-segment" aria-describedby="Duration Months" id="result-duration-months" />
-                                          </div>
+                                            <div class="form-group col-md-2">
+                                              <label class="control-label" for="result-duration-months">Months</label>
+                                              <input type="number" min="0" max="12" step="1"  class="form-control duration-segment" aria-describedby="Duration Months" id="result-duration-months" />
+                                            </div>
 
-                                          <div class="form-group col-md-1">
-                                            <label class="control-label" for="result-duration-weeks">Weeks</label>
-                                            <input type="number" min="0" max="52" step="1"  class="form-control duration-segment" aria-describedby="Duration Weeks" id="result-duration-weeks" />
-                                          </div>
+                                            <div class="form-group col-md-2">
+                                              <label class="control-label" for="result-duration-weeks">Weeks</label>
+                                              <input type="number" min="0" max="52" step="1"  class="form-control duration-segment" aria-describedby="Duration Weeks" id="result-duration-weeks" />
+                                            </div>
 
-                                          <div class="form-group col-md-1">
-                                            <label class="control-label" for="result-duration-days">Days</label>
-                                            <input type="number" min="0" max="365" step="1"  class="form-control duration-segment" style="padding:6px 6px 6px 10px" aria-describedby="Duration Days" id="result-duration-days" />
-                                          </div>
+                                            <div class="form-group col-md-2">
+                                              <label class="control-label" for="result-duration-days">Days</label>
+                                              <input type="number" min="0" max="365" step="1"  class="form-control duration-segment" style="padding:6px 6px 6px 10px" aria-describedby="Duration Days" id="result-duration-days" />
+                                            </div>
 
-                                          <div class="form-group col-md-1">
-                                            <label class="control-label" for="result-duration-hours">Hours</label>
-                                            <input type="number" min="0" max="24" step="1" class="form-control duration-segment" aria-describedby="Duration Hours" id="result-duration-hours" />
-                                          </div>
+                                            <div class="form-group col-md-2">
+                                              <label class="control-label" for="result-duration-hours">Hours</label>
+                                              <input type="number" min="0" max="24" step="1" class="form-control duration-segment" aria-describedby="Duration Hours" id="result-duration-hours" />
+                                            </div>
 
-                                          <div class="form-group col-md-1">
-                                            <label class="control-label" for="result-duration-minutes">Minutes</label>
-                                            <input type="number" min="0" max="60" step="1" class="form-control duration-segment" aria-describedby="Duration Minutes" id="result-duration-minutes" />
-                                          </div>
+                                            <div class="form-group col-md-2">
+                                              <label class="control-label" for="result-duration-minutes">Minutes</label>
+                                              <input type="number" min="0" max="60" step="1" class="form-control duration-segment" aria-describedby="Duration Minutes" id="result-duration-minutes" />
+                                            </div>
 
-                                          <div class="form-group col-md-1">
-                                            <label class="control-label" for="result-duration-seconds">Seconds</label>
-                                            <input type="number" min="0" max="60" step="1"  class="form-control duration-segment" aria-describedby="Duration Seconds" id="result-duration-seconds" />
-                                          </div>
+                                            <div class="form-group col-md-2">
+                                              <label class="control-label" for="result-duration-seconds">Seconds</label>
+                                              <input type="number" min="0" max="60" step="1"  class="form-control duration-segment" aria-describedby="Duration Seconds" id="result-duration-seconds" />
+                                            </div>
 
-                                          <div class="form-group col-md-1">
-                                            <label class="control-label" for="result-duration-milliseconds">ms</label>
-                                            <input type="number" min="0" max="60" step="1"  class="form-control duration-segment" aria-describedby="Duration Milliseconds" id="result-duration-milliseconds" />
+                                            <div class="form-group col-md-2">
+                                              <label class="control-label" for="result-duration-milliseconds">ms</label>
+                                              <input type="number" min="0" max="60" step="1"  class="form-control duration-segment" aria-describedby="Duration Milliseconds" id="result-duration-milliseconds" />
+                                            </div>
                                           </div>
                                         </div><!-- .row -->
 
